@@ -49,20 +49,28 @@ func RemoveDuplicates(headNode *Node) *Node {
 
 func WithoutBuffer(headNode *Node) *Node {
 	currentNode := headNode
+	removeDuplicatesWithoutBuffer(currentNode)
+	return headNode
+}
+
+func removeDuplicatesWithoutBuffer(currentNode *Node) {
 	for currentNode != nil && currentNode.next != nil {
 		if currentNode.data == currentNode.next.data {
 			currentNode.next = currentNode.next.next
 		} else {
-			runner := currentNode.next
-			for runner.next != nil {
-				if currentNode.data == runner.next.data {
-					runner.next = runner.next.next
-				} else {
-					runner = runner.next
-				}
-			}
-			currentNode = currentNode.next
+			currentNode = removeDuplicatesAcrossList(currentNode)
 		}
 	}
-	return headNode
+}
+
+func removeDuplicatesAcrossList(currentNode *Node) *Node {
+	runner := currentNode.next
+	for runner.next != nil {
+		if currentNode.data == runner.next.data {
+			runner.next = runner.next.next
+		} else {
+			runner = runner.next
+		}
+	}
+	return currentNode.next
 }
