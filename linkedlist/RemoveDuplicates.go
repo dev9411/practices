@@ -46,3 +46,23 @@ func RemoveDuplicates(headNode *Node) *Node {
 	}
 	return headNode
 }
+
+func WithoutBuffer(headNode *Node) *Node {
+	currentNode := headNode
+	for currentNode != nil && currentNode.next != nil {
+		if currentNode.data == currentNode.next.data {
+			currentNode.next = currentNode.next.next
+		} else {
+			runner := currentNode.next
+			for runner.next != nil {
+				if currentNode.data == runner.next.data {
+					runner.next = runner.next.next
+				} else {
+					runner = runner.next
+				}
+			}
+			currentNode = currentNode.next
+		}
+	}
+	return headNode
+}
