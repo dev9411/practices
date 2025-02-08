@@ -28,3 +28,21 @@ func countLinkedList(headNode *Node) int {
 	}
 	return listLength
 }
+
+func RemoveDuplicates(headNode *Node) *Node {
+	if headNode == nil {
+		return headNode
+	}
+	dataMap := make(map[int]bool)
+	currentNode := headNode
+	dataMap[headNode.data] = true
+	for currentNode.next != nil {
+		if dataMap[currentNode.next.data] {
+			currentNode.next = currentNode.next.next
+		} else {
+			dataMap[currentNode.next.data] = true
+			currentNode = currentNode.next
+		}
+	}
+	return headNode
+}
