@@ -2,16 +2,30 @@ from typing import List
 
 class CandySolution:
     def candy(self, ratings: List[int]) -> int:
-        
-        childrenCount = len(ratings)
-        candies = [1 for _ in range(childrenCount)]
+        n = len(ratings)
+        total_candies = n
+        i = 1
 
-        for i in range(1, childrenCount):
-            if ratings[i] > ratings[i-1]:
-                candies[i] = candies[i-1] + 1
+        while i < n:
+            if ratings[i] == ratings[i - 1]:
+                i += 1
+                continue
 
-        for i in range(childrenCount - 2, -1, -1):
-            if ratings[i] > ratings[i+1] and candies[i] < candies[i+1] + 1:
-                candies[i] = candies[i+1] + 1
+            current_peak = 0
+            while i < n and ratings[i] > ratings[i - 1]:
+                current_peak += 1
+                total_candies += current_peak
+                i += 1
+            
+            if i == n:
+                return total_candies
 
-        return sum(candies)
+            current_valley = 0
+            while i < n and ratings[i] < ratings[i - 1]:
+                current_valley += 1
+                total_candies += current_valley
+                i += 1
+
+            total_candies -= min(current_peak, current_valley)
+
+        return total_candies

@@ -26,6 +26,10 @@ class TestCandySolution(unittest.TestCase):
 
     def test_another_random_case(self):
         self.assertEqual(self.solution.candy([1, 3, 2, 2, 1]), 7)
+        self.assertEqual(self.solution.candy([1, 2, 3, 5, 4]), 11)
+        self.assertEqual(self.solution.candy([4, 5, 3, 2, 1]), 11)
+        self.assertEqual(self.solution.candy([3, 5, 4, 2, 1]), 11)
+        self.assertEqual(self.solution.candy([1, 2, 4, 5, 3]), 11)
 
 if __name__ == '__main__':
     unittest.main()
