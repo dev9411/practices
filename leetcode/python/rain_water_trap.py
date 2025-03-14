@@ -2,59 +2,48 @@ from typing import List
 
 class RainWaterTrap:
     def trap(self, height: List[int]) -> int:
-        if self.is_sorted(height):
+        i = 1
+        n = len(height)
+        self.trapped_volume = [0] * n
+        self.height_ranks = [-1]
+        self.blocks = [0] * n
+        self.current_max_index = 0
+        self.previous_max_index = 0
+
+        while i < n:
+            while i < n and height[i] <= height[i - 1]:
+                self.height_ranks.append(i - 1)
+                self.blocks[i] = height[i] + self.blocks[i - 1]
+                self.trapped_volume[i] = self.trapped_volume[i - 1]
+                i += 1
+
+            if i >= n:
+                break
+
+            j = i - 1
+            while height[i] > height[self.height_ranks[j]]:
+                if self.height_ranks[j] == -1:
+                    break
+                j = self.height_ranks[j]
+                
+            self.height_ranks.append(self.height_ranks[j])
+            if self.height_ranks[i] == -1:
+                self.blocks[i] = 0
+                self.previous_max_index = self.current_max_index
+                self.current_max_index = i
+            else:
+                self.blocks[i] = self.blocks[i - 1] + height[i]
+
+            wall2 = self.previous_max_index if self.height_ranks[i] == -1 else self.height_ranks[i]
+            self.trapped_volume[i] = self.trapped_volume[wall2] + self.calc_volume(i, height)
+            i += 1
+        return self.trapped_volume[n-1]
+
+    def calc_volume(self, i, height):
+        wall1 = i
+        wall2 = self.previous_max_index if self.height_ranks[i] == -1 else self.height_ranks[i]
+        max_volume = min(height[wall1], height[wall2]) * (wall1 - wall2 - 1)
+        if max_volume <= 0:
             return 0
-        max_wall_index = height.index(max(height))
-        return (
-            self.calc_trapped_water(height[:max_wall_index + 1], max_wall_index)
-            +
-            self.calc_trapped_water(height[max_wall_index:], 0)
-        )
-    
-    def calc_trapped_water(self, height: List[int], max_wall_index: int) -> int:
-        if len(height) < 3:
-            return 0
-        wall_2_index = self.second_max_wall_index(height, max_wall_index)
-        
-        if max_wall_index + wall_2_index == len(height) - 1:
-            return self.calc_volume(height)
-
-        return (
-            self.calc_trapped_water(height[:wall_2_index + 1], wall_2_index)
-            +
-            self.calc_trapped_water(height[wall_2_index:], 0)
-        )
-
-    def second_max_wall_index(self, height: List[int], max_wall_index: int) -> int:
-        if max_wall_index == 0:
-            return len(height) - 1 - height[::-1].index(max(height[1:]))
-        else:
-            return height.index(max(height[:-1]))
-    
-    def calc_volume(self, height: List[int]) -> int:
-        if len(height) < 3:
-            return 0
-
-        available_area = self.calc_available_area(height)
-        if available_area <= 0:
-            return 0
-
-        wall1 = 0
-        wall2 = len(height) - 1
-        occupied_area = sum(height) - height[wall1] - height[wall2]
-        return max(0, available_area - occupied_area)
-    
-    def calc_available_area(self, height: List[int]) -> int:
-        wall1 = 0
-        wall2 = len(height) - 1
-        return min(height[wall1], height[wall2]) * (wall2 - wall1 - 1)
-
-    def is_sorted(self, arr):
-        return self.is_sorted_descending(arr) or self.is_sorted_ascending(arr)
-
-    def is_sorted_ascending(self, arr):
-        return all(arr[i] <= arr[i + 1] for i in range(len(arr) - 1))
-
-    def is_sorted_descending(self, arr):
-        return all(arr[i] >= arr[i + 1] for i in range(len(arr) - 1))
-    
+        return max_volume - self.blocks[i - 1] + self.blocks[wall2]
+            
