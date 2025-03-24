@@ -4,7 +4,7 @@ from rain_water_trap import RainWaterTrap
 class TestRainWaterTrap(unittest.TestCase):
     def setUp(self):
         self.trap = RainWaterTrap()
-        
+
     def test_without_enough_walls(self):
         self.assertEqual(self.trap.trap([]), 0)
         self.assertEqual(self.trap.trap([4]), 0)
