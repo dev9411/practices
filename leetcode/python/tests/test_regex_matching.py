@@ -42,7 +42,6 @@ class TestRegexMatch(unittest.TestCase):
         self.assertTrue(self.check.is_match('aaaaa','a*'))
         self.assertFalse(self.check.is_match('aaaabbbb','a*'))
         self.assertFalse(self.check.is_match('abc','a*'))
-        self.assertFalse(self.check.is_match('aab','c*a*b'))
 
     def test_with_single_star(self):
         self.assertTrue(self.check.is_match('aaabc', 'a*bc'))
@@ -53,6 +52,7 @@ class TestRegexMatch(unittest.TestCase):
         
     def test_with_stars_mixed(self):
         self.assertTrue(self.check.is_match('aaabc', 'a*b*c'))
+        self.assertTrue(self.check.is_match('aaabc', '.*b*c'))
         self.assertTrue(self.check.is_match('abc', 'a*b*c'))
         self.assertFalse(self.check.is_match('abac', 'a*b*c'))
         self.assertFalse(self.check.is_match('abcc', 'a*b*c'))
@@ -82,3 +82,18 @@ class TestRegexMatch(unittest.TestCase):
         self.assertFalse(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz*'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyz','ab.*xy.*xyz.*xy.*xyz*'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyzzz','ab.*xy.*xyz.*xy.*xyz*'))
+
+    def test_more_tricky_patterns(self):
+        self.assertTrue(self.check.is_match('bcd','b*bcd'))
+        self.assertTrue(self.check.is_match('aab','c*a*b'))
+        self.assertTrue(self.check.is_match('ab','c*a*b'))
+        self.assertTrue(self.check.is_match('b','c*a*b'))
+        self.assertTrue(self.check.is_match('bcd','c*a*b*bcd'))
+        self.assertTrue(self.check.is_match('bcd','c*a*b*cd'))
+        self.assertTrue(self.check.is_match('qwertyb','.*a*b'))
+        self.assertTrue(self.check.is_match('xyzb','.*a*b'))
+        self.assertTrue(self.check.is_match('xyzab','.*a*b'))
+        self.assertTrue(self.check.is_match('xyzab','.*m*a*b'))
+        self.assertTrue(self.check.is_match('bb','.*a*b'))
+        self.assertTrue(self.check.is_match('ab','.*a*b'))
+        self.assertTrue(self.check.is_match('xb','.*a*b'))
