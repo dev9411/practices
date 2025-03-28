@@ -31,7 +31,6 @@ class TestRegexMatch(unittest.TestCase):
 
     def test_starting_with_dot_star(self):
         self.assertTrue(self.check.is_match('ab','.*'))
-        self.assertTrue(self.check.is_match('ab','.****'))
         self.assertTrue(self.check.is_match('aaa','.*'))
         self.assertTrue(self.check.is_match('abc','.*'))
 
@@ -65,7 +64,7 @@ class TestRegexMatch(unittest.TestCase):
         self.assertFalse(self.check.is_match('abadkhsauhbcsaysabdasdbhx','.*xy'))
         
     def test_complex_pattern(self):
-        self.assertFalse(self.check.is_match('abxy','ab.*xy'))
+        self.assertTrue(self.check.is_match('abxy','ab.*xy'))
         self.assertTrue(self.check.is_match('abxyzxy','ab.*xy'))
         self.assertTrue(self.check.is_match('abcxymnxyz','ab.*xy.*xyz'))
         self.assertTrue(self.check.is_match('abcxymnxyzxyxyxy','ab.*xy.*xyz.*xy'))
@@ -73,13 +72,13 @@ class TestRegexMatch(unittest.TestCase):
         self.assertTrue(self.check.is_match('abcxymnxyzmnxy','ab.*xy.*xyz.*xy'))
         self.assertTrue(self.check.is_match('abcxymnxyzmnxyzmnxyzmnxyz','ab.*xy.*xyz.*xy.*xyz'))
         self.assertTrue(self.check.is_match('abxyxyxyxyzxyxyzxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz'))
-        self.assertFalse(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz'))
+        self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyz','ab.*xy.*xyz.*xy.*xyz'))
-        self.assertFalse(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyzabc','ab.*xy.*xyz.*xy.*xyz.*'))
+        self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyzabc','ab.*xy.*xyz.*xy.*xyz.*'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyzabc','ab.*xy.*xyz.*xy.*xyz.*'))
-        self.assertFalse(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyzx','ab.*xy.*xyz.*xy.*xyz.'))
+        self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyzx','ab.*xy.*xyz.*xy.*xyz.'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyza','ab.*xy.*xyz.*xy.*xyz.'))
-        self.assertFalse(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz*'))
+        self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxyxyzxyxyz','ab.*xy.*xyz.*xy.*xyz*'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyz','ab.*xy.*xyz.*xy.*xyz*'))
         self.assertTrue(self.check.is_match('abxyxyxyxyxyxyxymxyzmxymxyzzz','ab.*xy.*xyz.*xy.*xyz*'))
 

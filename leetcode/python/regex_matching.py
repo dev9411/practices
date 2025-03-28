@@ -1,58 +1,28 @@
 class RegexMatch:
+    def __init__(self):
+        self.result_mappings = {}
 
-    DOT_CHAR = '.'
-    STAR_CHAR = '*'
+    def is_match(self, text: str, pattern: str) -> bool:
+        if not pattern:
+            return not text
 
-    def is_match(self, s: str, p: str):
-        return self.check(s, p, 0, 0, '', -1)
-
-    def check(self, s: str, p: str, s_index: int, p_index: int, previous_pattern: str, previous_star: int):
-        s_len = len(s)
-        p_len = len(p)
-        while s_index < s_len and p_index < p_len:
-            if s[s_index] == p[p_index] or p[p_index] == RegexMatch.DOT_CHAR:
-                return self.check(s, p, s_index + 1, p_index + 1, p[p_index], previous_star)
-
-            if p[p_index] == RegexMatch.STAR_CHAR:
-                if p_index == p_len - 1:
-                    if previous_pattern == RegexMatch.DOT_CHAR:
-                        return True
-                    elif previous_pattern == s[s_index]:
-                        return self.check(s, p, s_index + 1, p_index, previous_pattern, previous_star)
-                    else:
-                        return False
-
-                if s[s_index] == p[p_index + 1]:
-                    return self.check(s, p, s_index + 1, p_index + 2, p[p_index + 1], p_index)
-
-                if previous_pattern == p[p_index + 1]:
-                    return self.check(s, p, s_index - 1, p_index + 1, previous_pattern, p_index)
-                                        
-                if s[s_index] != p[p_index + 1]:
-                    if p_index + 2 < p_len and p[p_index + 2] == RegexMatch.STAR_CHAR and previous_pattern != s[s_index]:
-                        return self.check(s, p, s_index, p_index + 2, previous_pattern, p_index + 2)
-                    if previous_pattern == RegexMatch.DOT_CHAR or previous_pattern == s[s_index]:
-                        return self.check(s, p, s_index + 1, p_index, previous_pattern, previous_star)
-                    else:
-                        return False
-
-            if s[s_index] != p[p_index]:
-                if p_index + 1 < p_len and p[p_index + 1] == RegexMatch.STAR_CHAR:
-                    return self.check(s, p, s_index, p_index + 2, previous_pattern, previous_star)
-                if previous_star == -1:
-                    return False
-                else:
-                    return self.check(s, p, s_index, previous_star, p[previous_star - 1], previous_star)
-
-        while p_index < p_len:
-            if p[p_index] == RegexMatch.STAR_CHAR:
-                return self.check(s, p, s_index, p_index + 1, previous_pattern, previous_star)
-            break
+        if text in self.result_mappings and pattern in self.result_mappings[text]:
+            return self.result_mappings[text][pattern]
         
-        if s_index < s_len - 1 and p_index == p_len and previous_star != -1:
-            return self.check(s, p, s_index, previous_star, p[previous_star - 1], -1)
+        self.result_mappings[text] = {}
 
-        if s_index != s_len or p_index != p_len:
-            return False
+        first_match = bool(text) and pattern[0] in {text[0], "."}
 
-        return True
+        if len(pattern) >= 2 and pattern[1] == "*":
+            self.result_mappings[text][pattern] = (
+                self.is_match(text, pattern[2:])
+                or (
+                    first_match
+                    and 
+                    self.is_match(text[1:], pattern)
+                )
+            )
+        else:
+            self.result_mappings[text][pattern] = first_match and self.is_match(text[1:], pattern[1:])
+            
+        return self.result_mappings[text][pattern]
